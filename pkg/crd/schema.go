@@ -327,6 +327,7 @@ func mapToSchema(ctx *schemaContext, mapType *ast.MapType) *apiext.JSONSchemaPro
 
 type schemaOverrides struct {
 	forceOptional bool
+	description   string
 }
 
 // Preserve unknown fields for a few types to allow for proper validation.
@@ -414,9 +415,11 @@ var allowedFields = map[string]map[string]schemaOverrides{
 		"Handler":             {},
 		"InitialDelaySeconds": {},
 		"TimeoutSeconds":      {},
-		"PeriodSeconds":       {},
-		"SuccessThreshold":    {},
-		"FailureThreshold":    {},
+		"PeriodSeconds": {
+			description: "How often (in seconds) to perform the probe.",
+		},
+		"SuccessThreshold": {},
+		"FailureThreshold": {},
 	},
 	"k8s.io/api/core/v1.Handler": {
 		"Exec":      {},
@@ -596,7 +599,12 @@ func structToSchema(ctx *schemaContext, structType *ast.StructType) *apiext.JSON
 		} else {
 			propSchema = typeToSchema(ctx.ForInfo(&markers.TypeInfo{}), field.RawField.Type)
 		}
-		propSchema.Description = field.Doc
+
+		if overrides.description != "" {
+			propSchema.Description = overrides.description
+		} else {
+			propSchema.Description = field.Doc
+		}
 
 		applyMarkers(ctx, field.Markers, propSchema, field.RawField)
 
