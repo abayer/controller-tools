@@ -214,9 +214,12 @@ func FindKubeKinds(parser *Parser, metav1Pkg *loader.Package) map[schema.GroupKi
 		pkg.NeedTypesInfo()
 		typesInfo := pkg.TypesInfo
 
+		if pkg.PkgPath == "github.com/tektoncd/pipeline/pkg/apis/resource/v1alpha1" {
+			fmt.Printf("info is %+v\n", info)
+		}
 		for _, field := range info.Fields {
 			if pkg.PkgPath == "github.com/tektoncd/pipeline/pkg/apis/resource/v1alpha1" {
-				fmt.Printf("field for %s: %+v\n", typeIdent.Name)
+				fmt.Printf("field for %s: %+v\n", typeIdent.Name, field)
 			}
 			if field.Name != "" {
 				// type and object meta are embedded,

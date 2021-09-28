@@ -119,6 +119,7 @@ func (g Generator) Generate(ctx *genall.GenerationContext) (result error) {
 			continue
 		}
 
+		fmt.Printf("existing set: %+v\n", existingSet)
 		for pkg, gv := range parser.GroupVersions {
 			fmt.Printf("pkg: %s, kind: %s, gv: %s\n", pkg.String(), groupKind.Kind, gv.String())
 			if gv.Group != groupKind.Group {
