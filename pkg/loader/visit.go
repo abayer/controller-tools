@@ -17,7 +17,6 @@ limitations under the License.
 package loader
 
 import (
-	"fmt"
 	"go/ast"
 	"reflect"
 	"strconv"
@@ -35,7 +34,7 @@ func EachType(pkg *Package, cb TypeCallback) {
 	}
 	pkg.NeedSyntax()
 	for _, file := range pkg.Syntax {
-		fmt.Printf("each type syntax: %+v\n", file)
+//		fmt.Printf("each type syntax: %+v\n", file)
 		visitor.file = file
 		ast.Walk(visitor, file)
 	}

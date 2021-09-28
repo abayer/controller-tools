@@ -120,7 +120,7 @@ func (g Generator) Generate(ctx *genall.GenerationContext) (result error) {
 		}
 
 		for pkg, gv := range parser.GroupVersions {
-			fmt.Printf("pkg: %s, gv: %s\n", pkg.String(), gv.String())
+			fmt.Printf("pkg: %s, kind: %s, gv: %s\n", pkg.String(), groupKind.Kind, gv.String())
 			if gv.Group != groupKind.Group {
 				continue
 			}

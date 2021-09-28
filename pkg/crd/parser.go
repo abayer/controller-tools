@@ -127,7 +127,7 @@ func (p *Parser) indexTypes(pkg *loader.Package) {
 	if err != nil {
 		pkg.AddError(err)
 	} else {
-		fmt.Printf("pkg: %s/%s: skip: %t, groupName: %s\n", pkg.PkgPath, pkg.Name, pkgMarkers.Get("kubebuilder:skip") != nil, pkgMarkers.Get("groupName"))
+		fmt.Printf("pkg: %s: skip: %t, groupName: %s\n", pkg.PkgPath, pkgMarkers.Get("kubebuilder:skip") != nil, pkgMarkers.Get("groupName"))
 		if skipPkg := pkgMarkers.Get("kubebuilder:skip"); skipPkg != nil {
 			return
 		}
