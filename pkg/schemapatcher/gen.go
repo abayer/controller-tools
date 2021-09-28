@@ -367,6 +367,7 @@ func crdsFromDirectory(ctx *genall.GenerationContext, dir string) (map[schema.Gr
 			continue
 		}
 
+		fmt.Printf("type meta for %s: %+v\n", fileInfo.Name(), typeMeta)
 		// collect the group-kind and versions from the actual structured form
 		var actualCRD crdIsh
 		if err := kyaml.Unmarshal(rawContent, &actualCRD); err != nil {
