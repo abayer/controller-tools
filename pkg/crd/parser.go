@@ -188,7 +188,7 @@ func (p *Parser) NeedSchemaFor(typ TypeIdent) {
 	ctxForInfo.PackageMarkers = pkgMarkers
 
 	schema := infoToSchema(ctxForInfo)
-
+	fmt.Printf("need schema for %s generated: %+v", typ.String(), schema)
 	p.Schemata[typ] = *schema
 }
 
