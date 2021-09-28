@@ -201,6 +201,7 @@ func (p *Parser) NeedFlattenedSchemaFor(typ TypeIdent) {
 
 	p.NeedSchemaFor(typ)
 	partialFlattened := p.flattener.FlattenType(typ)
+	fmt.Printf("flattened for %s: %t\n", typ.String(), partialFlattened != nil)
 	fullyFlattened := FlattenEmbedded(partialFlattened, typ.Package)
 
 	p.FlattenedSchemata[typ] = *fullyFlattened
