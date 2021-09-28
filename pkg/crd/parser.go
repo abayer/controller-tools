@@ -164,6 +164,7 @@ func (p *Parser) LookupType(pkg *loader.Package, name string) *markers.TypeInfo 
 func (p *Parser) NeedSchemaFor(typ TypeIdent) {
 	p.init()
 
+	fmt.Printf("need schema for: %s\n", typ.String())
 	p.NeedPackage(typ.Package)
 	if _, knownSchema := p.Schemata[typ]; knownSchema {
 		return
@@ -172,6 +173,7 @@ func (p *Parser) NeedSchemaFor(typ TypeIdent) {
 	info, knownInfo := p.Types[typ]
 	if !knownInfo {
 		typ.Package.AddError(fmt.Errorf("unknown type %s", typ))
+		fmt.Printf("unknown type %s\n", typ)
 		return
 	}
 
@@ -188,7 +190,7 @@ func (p *Parser) NeedSchemaFor(typ TypeIdent) {
 	ctxForInfo.PackageMarkers = pkgMarkers
 
 	schema := infoToSchema(ctxForInfo)
-	fmt.Printf("need schema for %s generated: %+v", typ.String(), schema)
+	fmt.Printf("need schema for %s generated: %+v\n", typ.String(), schema)
 	p.Schemata[typ] = *schema
 }
 
