@@ -114,6 +114,7 @@ func (g Generator) Generate(ctx *genall.GenerationContext) (result error) {
 
 	// generate schemata for the types we care about, and save them to be written later.
 	for groupKind := range crdgen.FindKubeKinds(parser, metav1Pkg) {
+		fmt.Printf("kube kind: %s\n", groupKind)
 		existingSet, wanted := partialCRDSets[groupKind]
 		if !wanted {
 			continue
@@ -367,7 +368,6 @@ func crdsFromDirectory(ctx *genall.GenerationContext, dir string) (map[schema.Gr
 			continue
 		}
 
-		fmt.Printf("type meta for %s: %+v\n", fileInfo.Name(), typeMeta)
 		// collect the group-kind and versions from the actual structured form
 		var actualCRD crdIsh
 		if err := kyaml.Unmarshal(rawContent, &actualCRD); err != nil {
