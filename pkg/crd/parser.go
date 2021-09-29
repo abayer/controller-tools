@@ -56,7 +56,7 @@ type Parser struct {
 	// GroupVersions contains the known group-versions of each package in this parser.
 	GroupVersions map[*loader.Package]schema.GroupVersion
 	// CustomResourceDefinitions contains the known CustomResourceDefinitions for types in this parser.
-	CustomResourceDefinitions map[schema.GroupVersionKind]apiext.CustomResourceDefinition
+	CustomResourceDefinitions map[schema.GroupKind]apiext.CustomResourceDefinition
 	// FlattenedSchemata contains fully flattened schemata for use in building
 	// CustomResourceDefinition validation.  Each schema has been flattened by the flattener,
 	// and then embedded fields have been flattened with FlattenEmbedded.
@@ -113,7 +113,7 @@ func (p *Parser) init() {
 		p.GroupVersions = make(map[*loader.Package]schema.GroupVersion)
 	}
 	if p.CustomResourceDefinitions == nil {
-		p.CustomResourceDefinitions = make(map[schema.GroupVersionKind]apiext.CustomResourceDefinition)
+		p.CustomResourceDefinitions = make(map[schema.GroupKind]apiext.CustomResourceDefinition)
 	}
 	if p.FlattenedSchemata == nil {
 		p.FlattenedSchemata = make(map[TypeIdent]apiext.JSONSchemaProps)

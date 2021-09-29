@@ -203,9 +203,9 @@ func FindMetav1(roots []*loader.Package) *loader.Package {
 // FindKubeKinds locates all types that contain TypeMeta and ObjectMeta
 // (and thus may be a Kubernetes object), and returns the corresponding
 // group-kinds.
-func FindKubeKinds(parser *Parser, metav1Pkg *loader.Package) map[schema.GroupVersionKind]struct{} {
+func FindKubeKinds(parser *Parser, metav1Pkg *loader.Package) map[schema.GroupKind]struct{} {
 	// TODO(directxman12): technically, we should be finding metav1 per-package
-	kubeKinds := map[schema.GroupVersionKind]struct{}{}
+	kubeKinds := map[schema.GroupKind]struct{}{}
 	for typeIdent, info := range parser.Types {
 		hasObjectMeta := false
 		hasTypeMeta := false
@@ -256,10 +256,9 @@ func FindKubeKinds(parser *Parser, metav1Pkg *loader.Package) map[schema.GroupVe
 			continue
 		}
 
-		groupKind := schema.GroupVersionKind{
+		groupKind := schema.GroupKind{
 			Group: parser.GroupVersions[pkg].Group,
 			Kind:  typeIdent.Name,
-			Version: parser.GroupVersions[pkg].Version,
 		}
 		kubeKinds[groupKind] = struct{}{}
 	}

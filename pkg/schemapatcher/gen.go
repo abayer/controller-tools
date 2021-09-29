@@ -126,9 +126,6 @@ func (g Generator) Generate(ctx *genall.GenerationContext) (result error) {
 			if gv.Group != groupKind.Group {
 				continue
 			}
-			if gv.Version != groupKind.Version {
-				continue
-			}
 			if _, wantedVersion := existingSet.Versions[gv.Version]; !wantedVersion {
 				continue
 			}
@@ -180,11 +177,11 @@ func (g Generator) Generate(ctx *genall.GenerationContext) (result error) {
 
 		if allSame {
 			if err := existingSet.setGlobalSchema(); err != nil {
-				return fmt.Errorf("failed to set global firstSchema for %s: %w", existingSet.GroupVersionKind, err)
+				return fmt.Errorf("failed to set global firstSchema for %s: %w", existingSet.GroupKind, err)
 			}
 		} else {
 			if err := existingSet.setVersionedSchemata(); err != nil {
-				return fmt.Errorf("failed to set versioned schemas for %s: %w", existingSet.GroupVersionKind, err)
+				return fmt.Errorf("failed to set versioned schemas for %s: %w", existingSet.GroupKind, err)
 			}
 		}
 	}
@@ -219,20 +216,20 @@ func (g Generator) Generate(ctx *genall.GenerationContext) (result error) {
 }
 
 // partialCRDSet represents a set of CRDs of different apiext versions
-// (v1beta1.CRD vs v1.CRD) that represent the same GroupVersionKind.
+// (v1beta1.CRD vs v1.CRD) that represent the same GroupKind.
 //
 // It tracks modifications to the schemata of those CRDs from this source file,
 // plus some useful structured content, and keeps track of the raw YAML representation
 // of the different apiext versions.
 type partialCRDSet struct {
-	// GroupVersionKind is the GroupVersionKind represented by this CRD.
-	GroupVersionKind schema.GroupVersionKind
+	// GroupKind is the GroupKind represented by this CRD.
+	GroupKind schema.GroupKind
 	// NewSchemata are the new schemata generated from Go IDL by controller-gen.
 	NewSchemata map[string]apiext.JSONSchemaProps
 	// CRDVersions are the forms of this CRD across different apiextensions
 	// versions
 	CRDVersions []*partialCRD
-	// Versions are the versions of the given GroupVersionKind in this set of CRDs.
+	// Versions are the versions of the given GroupKind in this set of CRDs.
 	Versions map[string]struct{}
 }
 
@@ -339,8 +336,8 @@ func (e *partialCRD) setVersionedSchemata(newSchemata map[string]apiext.JSONSche
 // crdsFromDirectory returns loads all CRDs from the given directory in a
 // manner that preserves ordering, comments, etc in order to make patching
 // minimally invasive.  Returned CRDs are mapped by group-kind.
-func crdsFromDirectory(ctx *genall.GenerationContext, dir string) (map[schema.GroupVersionKind]*partialCRDSet, error) {
-	res := map[schema.GroupVersionKind]*partialCRDSet{}
+func crdsFromDirectory(ctx *genall.GenerationContext, dir string) (map[schema.GroupKind]*partialCRDSet, error) {
+	res := map[schema.GroupKind]*partialCRDSet{}
 	dirEntries, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return nil, err
@@ -376,7 +373,7 @@ func crdsFromDirectory(ctx *genall.GenerationContext, dir string) (map[schema.Gr
 		if err := kyaml.Unmarshal(rawContent, &actualCRD); err != nil {
 			continue
 		}
-		groupKind := schema.GroupVersionKind{Group: actualCRD.Spec.Group, Kind: actualCRD.Spec.Names.Kind, Version: actualCRD.Spec.Versions[0].Name}
+		groupKind := schema.GroupKind{Group: actualCRD.Spec.Group, Kind: actualCRD.Spec.Names.Kind}
 		versions := make(map[string]struct{}, len(actualCRD.Spec.Versions))
 		for _, ver := range actualCRD.Spec.Versions {
 			versions[ver.Name] = struct{}{}
@@ -391,9 +388,9 @@ func crdsFromDirectory(ctx *genall.GenerationContext, dir string) (map[schema.Gr
 		// then store this CRDVersion of the CRD in a set, populating the set if necessary
 		if res[groupKind] == nil {
 			res[groupKind] = &partialCRDSet{
-				GroupVersionKind: groupKind,
-				NewSchemata:      make(map[string]apiext.JSONSchemaProps),
-				Versions:         make(map[string]struct{}),
+				GroupKind:   groupKind,
+				NewSchemata: make(map[string]apiext.JSONSchemaProps),
+				Versions:    make(map[string]struct{}),
 			}
 		}
 		for ver := range versions {
